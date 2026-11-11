@@ -1,0 +1,52 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dirtflow-research"
+version = "0.1.0"
+description = "Text-conditioned Minecraft world editing with continuous flow models"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "LICENSES/*.txt"]
+dependencies = [
+    "torch>=2.12.0,<2.13", "numpy==2.4.6", "scipy==1.18.1",
+    "transformers==5.13.0", "safetensors==0.8.0", "huggingface-hub>=1.19,<2",
+    "tensorboard==2.21.0",
+]
+
+[project.optional-dependencies]
+train = ["bitsandbytes>=0.49,<0.51"]
+dev = ["pytest==9.0.3", "ruff==0.15.17", "mypy>=1.15", "build>=1.2"]
+
+[project.urls]
+Repository = "https://github.com/IvanBanny/dirtflow-v0"
+Model = "https://huggingface.co/IvanBanny/dirtflow-v0"
+
+[tool.setuptools.packages.find]
+include = ["dirtflow*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-p no:cacheprovider"
+markers = ["integration: requires a released model bundle or CUDA"]
+
+[tool.ruff]
+line-length = 88
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.mypy]
+ignore_missing_imports = true
+follow_imports = "silent"
+check_untyped_defs = true
+
+[[tool.uv.index]]
+name = "pytorch-cu132"
+url = "https://download.pytorch.org/whl/cu132"
+explicit = true
+
+[tool.uv.sources]
+torch = {index = "pytorch-cu132"}

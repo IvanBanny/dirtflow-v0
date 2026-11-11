@@ -1,0 +1,25 @@
+name: Checks
+
+on: [push, pull_request]
+
+jobs:
+  cpu:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: astral-sh/setup-uv@v6
+      - run: uv pip install --system torch==2.12.1 --index-url https://download.pytorch.org/whl/cpu
+      - run: uv pip install --system -e '.[dev]'
+      - run: uv lock --check
+      - run: ruff check --no-cache dirtflow tests configs *.py
+      - run: ruff format --check --no-cache dirtflow tests configs *.py
+      - run: mypy dirtflow
+      - run: pytest -m 'not integration'
+        env:
+          OMP_NUM_THREADS: "2"
+          MKL_NUM_THREADS: "2"
+          CUDA_VISIBLE_DEVICES: ""
+      - run: python -m build

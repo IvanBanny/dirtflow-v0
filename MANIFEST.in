@@ -1,0 +1,7 @@
+include *.py
+include uv.lock
+recursive-include configs *.py
+recursive-include tests *.py
+recursive-include images *.png *.svg
+recursive-exclude * AGENTS.md
+global-exclude *.pyc
